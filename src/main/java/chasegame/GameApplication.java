@@ -7,6 +7,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Launches the application window and starts execution.
+ */
+
 public class GameApplication extends Application {
 
     @Override

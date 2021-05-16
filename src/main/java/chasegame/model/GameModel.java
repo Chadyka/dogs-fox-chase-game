@@ -4,6 +4,10 @@ import javafx.beans.property.ObjectProperty;
 
 import java.util.*;
 
+/**
+ * Model object for the dog-fox game. Handles game state.
+ */
+
 public class GameModel {
 
     public static int BOARD_SIZE = 8;

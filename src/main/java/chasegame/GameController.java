@@ -14,6 +14,10 @@ import javafx.scene.shape.Circle;
 
 import org.tinylog.Logger;
 
+/**
+ * Controls the flow of the game, selection and game over messages.
+ */
+
 public class GameController {
 
     private enum SelectionPhase {

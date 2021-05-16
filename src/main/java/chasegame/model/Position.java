@@ -1,5 +1,10 @@
 package chasegame.model;
 
+/**
+ * Simple position class for handling moves and current position.
+ * Uses Java 16 Record class.
+ */
+
 public record Position(int row, int col) {
 
     public Position moveTo(Direction direction) {

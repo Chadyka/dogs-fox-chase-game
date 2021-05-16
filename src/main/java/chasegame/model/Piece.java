@@ -3,6 +3,10 @@ package chasegame.model;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+/**
+ * Class for abstracting pieces.
+ */
+
 public class Piece {
 
     private final PieceType type;

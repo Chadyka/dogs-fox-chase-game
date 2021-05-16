@@ -1,5 +1,9 @@
 package chasegame.model;
 
+/**
+ * Class for the movement of Dog pieces
+ */
+
 public enum DogDirection implements Direction {
 
     UP_LEFT(-1, -1),

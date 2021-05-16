@@ -1,5 +1,9 @@
 package chasegame.model;
 
+/**
+ * Class for the movement of Fox pieces
+ */
+
 public enum FoxDirection implements Direction {
 
     UP_LEFT(-1, -1),
