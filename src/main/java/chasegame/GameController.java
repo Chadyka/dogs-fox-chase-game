@@ -185,6 +185,9 @@ public class GameController {
                     for (var direction : model.getValidFoxMoves(pieceNumber)) {
                         selectablePositions.add(selected.moveTo(direction));
                     }
+                    if (model.getValidFoxMoves(pieceNumber).size() == 0) {
+                        Logger.debug("Dogs Win!");
+                    }
                 }
             }
         }
