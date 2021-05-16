@@ -1,0 +1,12 @@
+.selectable {
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}
+
+.black {
+    -fx-background-color: grey;
+}
+
+.white {
+    -fx-background-color: white;
+}
