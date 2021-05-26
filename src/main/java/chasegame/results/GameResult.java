@@ -5,9 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.Duration;
-import java.time.ZonedDateTime;
 
 /**
  * Class representing the result of a game played by a specific player.

@@ -1,9 +1,8 @@
 package chasegame.model;
 
 /**
- * Class for the movement of Fox pieces
+ * Class representation of Fox pieces
  */
-
 public enum FoxDirection implements Direction {
 
     UP_LEFT(-1, -1),
@@ -27,6 +26,12 @@ public enum FoxDirection implements Direction {
         return colChange;
     }
 
+    /**
+     * Gives a direction for a desired move.
+     * @param rowChange position change on the x axis.
+     * @param colChange position change on the y axis.
+     * @return the desired direction.
+     */
     public static FoxDirection of(int rowChange, int colChange) {
         for (var direction : values()) {
             if (direction.rowChange == rowChange && direction.colChange == colChange) {

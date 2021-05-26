@@ -1,9 +1,8 @@
 package chasegame.model;
 
 /**
- * Class for the movement of Dog pieces
+ * Class representation of Dog pieces
  */
-
 public enum DogDirection implements Direction {
 
     UP_LEFT(-1, -1),
@@ -25,6 +24,12 @@ public enum DogDirection implements Direction {
         return colChange;
     }
 
+    /**
+     * Gives a direction for a desired move.
+     * @param rowChange position change on the x axis.
+     * @param colChange position change on the y axis.
+     * @return the desired direction.
+     */
     public static DogDirection of(int rowChange, int colChange) {
         for (var direction : values()) {
             if (direction.rowChange == rowChange && direction.colChange == colChange) {

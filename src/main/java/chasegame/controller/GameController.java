@@ -31,9 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controls the flow of the game, selection and game over messages.
+ * Controls the flow of the game, selection and game over database actions.
  */
-
 public class GameController {
 
     private String playerName;
@@ -50,6 +49,9 @@ public class GameController {
         return playerName;
     }
 
+    /**
+     * Switches movement phases.
+     */
     private enum SelectionPhase {
         SELECT_FROM,
         SELECT_TO;
@@ -96,6 +98,9 @@ public class GameController {
         showSelectablePositions();
     }
 
+    /**
+     * Creates squares on the board.
+     */
     private void createBoard() {
         for (int i = 0; i < GameModel.BOARD_SIZE; i++) {
             for (int j = 0; j < GameModel.BOARD_SIZE; j++) {
@@ -111,6 +116,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Creates a {@link StackPane} square on the {@link GridPane}.
+     *
+     * @return the square that was created.
+     */
     private StackPane createSquare() {
         var square = new StackPane();
         square.getStyleClass().add("square");
@@ -118,6 +128,9 @@ public class GameController {
         return square;
     }
 
+    /**
+     * Creates board pieces (Fox and Dogs)
+     */
     private void createPieces() {
         for (int i = 0; i < model.getPieceCount(); i++) {
             model.positionProperty(i).addListener(this::piecePositionChange);
@@ -126,6 +139,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Creates circle that represents the given piece.
+     * @param color the color of the piece.
+     * @return the {@link Circle} instance representing the piece.
+     */
     private Circle createPiece(Color color) {
         var piece = new Circle(50);
         piece.setFill(color);
@@ -142,6 +160,10 @@ public class GameController {
         handleClickOnSquare(position);
     }
 
+    /**
+     * Handles click on any square of the board.
+     * @param position the square's position that was clicked
+     */
     private void handleClickOnSquare(Position position) {
         switch (selectionPhase) {
             case SELECT_FROM -> {
@@ -181,6 +203,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles win condition for the Fox.
+     * @return true if the Fox won the game.
+     */
     private boolean isFoxWin() {
         List<Position> positions = model.getAllPiecesPositions();
         int counter = 0;
@@ -195,7 +221,9 @@ public class GameController {
         return counter > 3;
     }
 
-
+    /**
+     * Changes phases of selection.
+     */
     private void alterSelectionPhase() {
         selectionPhase = selectionPhase.alter();
         hideSelectablePositions();
@@ -203,26 +231,42 @@ public class GameController {
         showSelectablePositions();
     }
 
+    /**
+     * Selects an available position.
+     * @param position position that could be selected.
+     */
     private void selectPosition(Position position) {
         selected = position;
         showSelectedPosition();
     }
 
+    /**
+     * Adds border to selected position.
+     */
     private void showSelectedPosition() {
         var square = getSquare(selected);
         square.getStyleClass().add("selected");
     }
 
+    /**
+     * Deselects a position that was previously selected.
+     */
     private void deselectSelectedPosition() {
         hideSelectedPosition();
         selected = null;
     }
 
+    /**
+     * Removes highlight from square.
+     */
     private void hideSelectedPosition() {
         var square = getSquare(selected);
         square.getStyleClass().remove("selected");
     }
 
+    /**
+     * Sets list of positions that are available.
+     */
     private void setSelectablePositions() {
         selectablePositions.clear();
         switch (selectionPhase) {
@@ -249,6 +293,9 @@ public class GameController {
 
     }
 
+    /**
+     * Shows available moves.
+     */
     private void showSelectablePositions() {
         for (var selectablePosition : selectablePositions) {
             var square = getSquare(selectablePosition);
@@ -256,6 +303,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Hides available moves.
+     */
     private void hideSelectablePositions() {
         for (var selectablePosition : selectablePositions) {
             var square = getSquare(selectablePosition);
@@ -263,6 +313,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Getter for {@link StackPane} square instance.
+     * @param position position of the square.
+     * @return the square instance.
+     */
     private StackPane getSquare(Position position) {
         for (var child : board.getChildren()) {
             if (GridPane.getRowIndex(child) == position.row() && GridPane.getColumnIndex(child) == position.col()) {
@@ -272,6 +327,12 @@ public class GameController {
         throw new AssertionError();
     }
 
+    /**
+     * Changes the {@link Position} of the given piece.
+     * @param observable changeable position of the piece.
+     * @param oldPosition position before the move.
+     * @param newPosition desired position after moving.
+     */
     private void piecePositionChange(ObservableValue<? extends Position> observable, Position oldPosition, Position newPosition) {
         Logger.debug("Move: {} -> {}", oldPosition, newPosition);
         StackPane oldSquare = getSquare(oldPosition);
@@ -280,6 +341,11 @@ public class GameController {
         oldSquare.getChildren().clear();
     }
 
+    /**
+     * Loads HighScore scene.
+     * @param actionEvent click event from the highscore button.
+     * @throws IOException occurs when {@link FXMLLoader} can't find a file.
+     */
     public void seeHighScores(ActionEvent actionEvent) throws IOException {
         Logger.info("Loading high scores scene...");
         fxmlLoader.setLocation(getClass().getResource("/fxml/highscore.fxml"));
@@ -289,6 +355,10 @@ public class GameController {
         stage.show();
     }
 
+    /**
+     * Creates database build of the Game result.
+     * @return the object used for the database insert.
+     */
     private GameResult createGameResult() {
         return GameResult.builder()
                 .player(playerName)

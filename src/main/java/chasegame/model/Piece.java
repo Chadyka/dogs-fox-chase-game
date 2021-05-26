@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Class for abstracting pieces.
  */
-
 public class Piece {
 
     private final PieceType type;
@@ -25,6 +24,10 @@ public class Piece {
         return position.get();
     }
 
+    /**
+     * Sets new position for a piece
+     * @param direction desired new location for the {@link Piece}
+     */
     public void moveTo(Direction direction) {
         Position newPosition = position.get().moveTo(direction);
         position.set(newPosition);
