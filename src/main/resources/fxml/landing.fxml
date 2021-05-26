@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chasegame.controller.StartController">
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="365.0" layoutY="342.0" text="Chase game" textFill="#002366">
+        <font>
+            <Font size="36.0" />
+        </font>
+    </Label>
+    <TextField fx:id="inputField" layoutX="398.0" layoutY="437.0" prefHeight="44.0" prefWidth="158.0" promptText="Your name here" />
+    <Button fx:id="startButton" layoutX="425.0" layoutY="540.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="105.0" text="Start game" onAction="#startGame"/>
+</Pane>
