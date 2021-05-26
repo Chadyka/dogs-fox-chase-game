@@ -1,24 +1,54 @@
-package chasegame;
-
-import java.util.ArrayList;
-import java.util.List;
+package chasegame.controller;
 
 import chasegame.model.*;
+import chasegame.results.GameResult;
+import chasegame.results.GameResultDao;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
+import javafx.stage.Stage;
 import org.tinylog.Logger;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controls the flow of the game, selection and game over messages.
  */
 
 public class GameController {
+
+    private String playerName;
+    private Instant startTime;
+    private IntegerProperty rounds = new SimpleIntegerProperty();
+    private StringProperty turnText = new SimpleStringProperty("Dog's turn!");
+    private int roundCounter = 1;
+
+    public void setPlayerName(String text) {
+        this.playerName = text;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
 
     private enum SelectionPhase {
         SELECT_FROM,
@@ -40,20 +70,35 @@ public class GameController {
 
     private GameModel model = new GameModel();
 
+    @Inject
+    private FXMLLoader fxmlLoader;
+
+    @Inject
+    private GameResultDao gameResultDao;
+
     @FXML
     private GridPane board;
+
+    @FXML
+    private Label roundsLabel;
+
+    @FXML
+    private Label turnLabel;
 
     @FXML
     private void initialize() {
         createBoard();
         createPieces();
+        startTime = Instant.now();
+        roundsLabel.textProperty().bind(rounds.asString());
+        turnLabel.textProperty().bind(turnText);
         setSelectablePositions();
         showSelectablePositions();
     }
 
     private void createBoard() {
-        for (int i = 0; i < board.getRowCount(); i++) {
-            for (int j = 0; j < board.getColumnCount(); j++) {
+        for (int i = 0; i < GameModel.BOARD_SIZE; i++) {
+            for (int j = 0; j < GameModel.BOARD_SIZE; j++) {
                 var square = createSquare();
                 board.add(square, j, i);
                 if ((i + j) % 2 == 0) {
@@ -111,9 +156,13 @@ public class GameController {
 
                     Direction direction = null;
                     if (model.getTurnOrder() == GameModel.TurnOrder.DOG) {
+                        turnText.set("Fox turn!");
                         direction = DogDirection.of(position.row() - selected.row(), position.col() - selected.col());
 
                     } else if (model.getTurnOrder() == GameModel.TurnOrder.FOX) {
+                        roundCounter++;
+                        rounds.set(roundCounter);
+                        turnText.set("Dog turn!");
                         direction = FoxDirection.of(position.row() - selected.row(), position.col() - selected.col());
                     }
 
@@ -123,8 +172,9 @@ public class GameController {
                     model.changeTurnOrder();
                     Logger.debug("{} Turn now!", model.getTurnOrder());
                     alterSelectionPhase();
-                    if (isFoxWin()){
+                    if (isFoxWin()) {
                         Logger.debug("Fox Wins!");
+                        gameResultDao.persist(createGameResult());
                     }
                 }
             }
@@ -135,11 +185,11 @@ public class GameController {
         List<Position> positions = model.getAllPiecesPositions();
         int counter = 0;
         for (int i = 1; i < positions.size(); i++) {
-            if (positions.get(0).row() > positions.get(i).row()){
+            if (positions.get(0).row() > positions.get(i).row()) {
                 counter++;
             }
         }
-        if (positions.get(0).row() == 7){
+        if (positions.get(0).row() == 7) {
             return true;
         }
         return counter > 3;
@@ -191,10 +241,12 @@ public class GameController {
                     }
                     if (model.getValidFoxMoves(pieceNumber).size() == 0) {
                         Logger.debug("Dogs Win!");
+                        gameResultDao.persist(createGameResult());
                     }
                 }
             }
         }
+
     }
 
     private void showSelectablePositions() {
@@ -226,5 +278,22 @@ public class GameController {
         StackPane newSquare = getSquare(newPosition);
         newSquare.getChildren().addAll(oldSquare.getChildren());
         oldSquare.getChildren().clear();
+    }
+
+    public void seeHighScores(ActionEvent actionEvent) throws IOException {
+        Logger.info("Loading high scores scene...");
+        fxmlLoader.setLocation(getClass().getResource("/fxml/highscore.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    private GameResult createGameResult() {
+        return GameResult.builder()
+                .player(playerName)
+                .duration(Duration.between(startTime, Instant.now()))
+                .rounds(rounds.get())
+                .build();
     }
 }
