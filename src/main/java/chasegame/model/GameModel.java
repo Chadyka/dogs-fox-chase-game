@@ -42,11 +42,11 @@ public class GameModel {
     }
 
     public GameModel() {
-        this(new Piece(PieceType.GREY, new Position(0, 2)),
-                new Piece(PieceType.BLACK, new Position(BOARD_SIZE - 1, BOARD_SIZE - 1)),
-                new Piece(PieceType.BLACK, new Position(BOARD_SIZE - 1, 5)),
-                new Piece(PieceType.BLACK, new Position(BOARD_SIZE - 1, 3)),
-                new Piece(PieceType.BLACK, new Position(BOARD_SIZE - 1, 1)));
+        this(new Piece(Piece.PieceColor.GREY, new Position(0, 2)),
+                new Piece(Piece.PieceColor.BLACK, new Position(BOARD_SIZE - 1, BOARD_SIZE - 1)),
+                new Piece(Piece.PieceColor.BLACK, new Position(BOARD_SIZE - 1, 5)),
+                new Piece(Piece.PieceColor.BLACK, new Position(BOARD_SIZE - 1, 3)),
+                new Piece(Piece.PieceColor.BLACK, new Position(BOARD_SIZE - 1, 1)));
     }
 
     public GameModel(Piece... pieces) {
@@ -72,8 +72,8 @@ public class GameModel {
         return pieces.length;
     }
 
-    public PieceType getPieceType(int pieceNumber) {
-        return pieces[pieceNumber].getType();
+    public Piece.PieceColor getPieceColor(int pieceNumber) {
+        return pieces[pieceNumber].getColor();
     }
 
     public Position getPiecePosition(int pieceNumber) {

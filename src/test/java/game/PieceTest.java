@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PieceTest {
 
-    Piece fox = new Piece(PieceType.GREY, new Position(0, 2));
-    Piece dog = new Piece(PieceType.GREY, new Position(7, 7));
+    Piece fox = new Piece(Piece.PieceColor.BLACK, new Position(0, 2));
+    Piece dog = new Piece(Piece.PieceColor.GREY, new Position(7, 7));
 
     @Test
     public void pieceMoveToTest() {

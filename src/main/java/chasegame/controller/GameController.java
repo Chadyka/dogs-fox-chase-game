@@ -14,6 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -36,17 +38,20 @@ import java.util.List;
 public class GameController {
 
     private String playerName;
+    private String playerName1;
+    private String winnerType;
+
     private Instant startTime;
     private IntegerProperty rounds = new SimpleIntegerProperty();
     private StringProperty turnText = new SimpleStringProperty("Dog's turn!");
     private int roundCounter = 1;
 
-    public void setPlayerName(String text) {
-        this.playerName = text;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public void setPlayerName1(String playerName1) {
+        this.playerName1 = playerName1;
     }
 
     /**
@@ -134,13 +139,14 @@ public class GameController {
     private void createPieces() {
         for (int i = 0; i < model.getPieceCount(); i++) {
             model.positionProperty(i).addListener(this::piecePositionChange);
-            var piece = createPiece(Color.valueOf(model.getPieceType(i).name()));
+            var piece = createPiece(Color.valueOf(model.getPieceColor(i).name()));
             getSquare(model.getPiecePosition(i)).getChildren().add(piece);
         }
     }
 
     /**
      * Creates circle that represents the given piece.
+     *
      * @param color the color of the piece.
      * @return the {@link Circle} instance representing the piece.
      */
@@ -162,6 +168,7 @@ public class GameController {
 
     /**
      * Handles click on any square of the board.
+     *
      * @param position the square's position that was clicked
      */
     private void handleClickOnSquare(Position position) {
@@ -196,6 +203,8 @@ public class GameController {
                     alterSelectionPhase();
                     if (isFoxWin()) {
                         Logger.debug("Fox Wins!");
+                        gameOverDialog("Fox");
+                        winnerType = "Fox";
                         gameResultDao.persist(createGameResult());
                     }
                 }
@@ -205,6 +214,7 @@ public class GameController {
 
     /**
      * Handles win condition for the Fox.
+     *
      * @return true if the Fox won the game.
      */
     private boolean isFoxWin() {
@@ -233,6 +243,7 @@ public class GameController {
 
     /**
      * Selects an available position.
+     *
      * @param position position that could be selected.
      */
     private void selectPosition(Position position) {
@@ -285,6 +296,8 @@ public class GameController {
                     }
                     if (model.getValidFoxMoves(pieceNumber).size() == 0) {
                         Logger.debug("Dogs Win!");
+                        gameOverDialog("Dogs");
+                        winnerType = "Dogs";
                         gameResultDao.persist(createGameResult());
                     }
                 }
@@ -315,6 +328,7 @@ public class GameController {
 
     /**
      * Getter for {@link StackPane} square instance.
+     *
      * @param position position of the square.
      * @return the square instance.
      */
@@ -329,7 +343,8 @@ public class GameController {
 
     /**
      * Changes the {@link Position} of the given piece.
-     * @param observable changeable position of the piece.
+     *
+     * @param observable  changeable position of the piece.
      * @param oldPosition position before the move.
      * @param newPosition desired position after moving.
      */
@@ -343,6 +358,7 @@ public class GameController {
 
     /**
      * Loads HighScore scene.
+     *
      * @param actionEvent click event from the highscore button.
      * @throws IOException occurs when {@link FXMLLoader} can't find a file.
      */
@@ -357,13 +373,35 @@ public class GameController {
 
     /**
      * Creates database build of the Game result.
+     *
      * @return the object used for the database insert.
      */
     private GameResult createGameResult() {
-        return GameResult.builder()
-                .player(playerName)
-                .duration(Duration.between(startTime, Instant.now()))
-                .rounds(rounds.get())
-                .build();
+        if (winnerType.equals("Fox")) {
+            return GameResult.builder()
+                    .player(playerName1)
+                    .duration(Duration.between(startTime, Instant.now()))
+                    .rounds(rounds.get())
+                    .build();
+        } else if (winnerType.equals("Dogs")) {
+            return GameResult.builder()
+                    .player(playerName)
+                    .duration(Duration.between(startTime, Instant.now()))
+                    .rounds(rounds.get())
+                    .build();
+        }
+        return null;
+    }
+
+    /**
+     * Dialog window that pops up if the game ended
+     * @param winner name of the winner's piece
+     */
+    private void gameOverDialog(String winner) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over!");
+        alert.setHeaderText(null);
+        alert.setContentText(winner + " won the game!");
+        alert.showAndWait();
     }
 }

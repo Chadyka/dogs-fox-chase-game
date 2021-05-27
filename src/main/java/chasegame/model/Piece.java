@@ -8,16 +8,21 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class Piece {
 
-    private final PieceType type;
+    private final PieceColor color;
     private final ObjectProperty<Position> position = new SimpleObjectProperty<>();
 
-    public Piece(PieceType type, Position position) {
-        this.type = type;
+    public enum PieceColor {
+        BLACK,
+        GREY
+    }
+
+    public Piece(PieceColor color, Position position) {
+        this.color = color;
         this.position.set(position);
     }
 
-    public PieceType getType() {
-        return type;
+    public PieceColor getColor() {
+        return color;
     }
 
     public Position getPosition() {
@@ -38,6 +43,6 @@ public class Piece {
     }
 
     public String toString() {
-        return type.toString() + position.get().toString();
+        return color.toString() + position.get().toString();
     }
 }

@@ -44,6 +44,9 @@ public class EndController {
     private TableColumn<GameResult, Duration> duration;
 
     @FXML
+    private TableColumn<GameResult, String> winnerType;
+
+    @FXML
     private void initialize() {
         Logger.debug("Loading high scores...");
         List<GameResult> highScoreList = gameResultDao.findBest(10);

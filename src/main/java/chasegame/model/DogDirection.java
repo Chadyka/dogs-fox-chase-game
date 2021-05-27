@@ -1,7 +1,7 @@
 package chasegame.model;
 
 /**
- * Class representation of Dog pieces
+ * Class representation for movement direction of Dog pieces.
  */
 public enum DogDirection implements Direction {
 
