@@ -111,6 +111,7 @@
         </dependency>
     </dependencies>
     <build>
+        <sourceDirectory>target/generated-sources/delombok</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -123,9 +124,15 @@
                 <version>1.18.20.0</version>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>delombok</goal>
                         </goals>
+                        <configuration>
+                            <addOutputDirectory>false</addOutputDirectory>
+                            <outputDirectory>target/generated-sources/delombok</outputDirectory>
+                            <sourceDirectory>src/main/java</sourceDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -209,6 +216,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.2.0</version>
+                <configuration>
+                    <sourcepath>target/generated-sources/delombok</sourcepath>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>

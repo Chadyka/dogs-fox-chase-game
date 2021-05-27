@@ -14,7 +14,7 @@
     </skin>
     <body>
         <links>
-            <item name="ip-geolocator repository" href="https://github.com/Chadyka/dogs-fox-chase-game"/>
+            <item name="dog-fox chase game repository" href="https://github.com/Chadyka/dogs-fox-chase-game"/>
             <item name="Chadyka @github" href="https://github.com/Chadyka"/>
         </links>
         <menu name="Overview">
